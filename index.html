@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    // Theme flicker prevention - runs immediately before page renders
+    (function () {
+      const savedTheme = localStorage.getItem("theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (systemDark ? "dark" : "light");
+      document.documentElement.className = theme;
+    })();
+  </script>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <span class="theme-icon-light">🌙</span>
+    <span class="theme-icon-dark" style="display:none;">☀️</span>
+  </button>
+
+  <div class="container">
+    <header>
+      <h1>Tools</h1>
+      <p class="subtitle">Miscellaneous tools, mostly built with LLMs</p>
+    </header>
+
+    <main>
+      <ul class="tools-list">
+        <li>
+          <a href="/dewpoint.html">
+            <h3>Dew Point Explorer</h3>
+            <p>Interactive dew point calculator with comfort indicators and charts</p>
+          </a>
+        </li>
+      </ul>
+    </main>
+
+    <footer>
+      <p>Built by <a href="https://danielcorin.com">Daniel Corin</a></p>
+    </footer>
+  </div>
+
+  <script>
+// Theme toggle functionality
+const themeToggle = document.getElementById('theme-toggle');
+const lightIcon = themeToggle.querySelector('.theme-icon-light');
+const darkIcon = themeToggle.querySelector('.theme-icon-dark');
+
+function updateThemeIcon() {
+  const isDark = document.documentElement.className === 'dark';
+  lightIcon.style.display = isDark ? 'none' : 'inline';
+  darkIcon.style.display = isDark ? 'inline' : 'none';
+}
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.className;
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.className = newTheme;
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon();
+});
+
+updateThemeIcon();
+  </script>
+</body>
+</html>

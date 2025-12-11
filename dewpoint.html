@@ -1,528 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dew Point Explorer</title>
+  <title>Dew Point Explorer | Tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-:root {
-  --bg-primary: #0a0f1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --bg-card: #172033;
-  --accent-primary: #38bdf8;
-  --accent-secondary: #818cf8;
-  --accent-warm: #fb923c;
-  --accent-cool: #22d3ee;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: #334155;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --danger: #f87171;
-
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-
-  --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-}
-
-body {
-  font-family: var(--font-sans);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(129, 140, 248, 0.08) 0%, transparent 50%);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-header {
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem 0;
-}
-
-h1 {
-  font-size: 3rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-  font-weight: 300;
-}
-
-main {
-  display: grid;
-  gap: 2rem;
-}
-
-.controls-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.control-group {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-card);
-}
-
-.control-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.control-header label {
-  font-weight: 500;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.value-display {
-  display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
-}
-
-.value-display .value {
-  font-family: var(--font-mono);
-  font-size: 2rem;
-  font-weight: 500;
-  color: var(--accent-primary);
-}
-
-.value-display .unit {
-  font-size: 1rem;
-  color: var(--text-secondary);
-}
-
-.value-display .secondary-value {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-left: 0.5rem;
-}
-
-.slider-container {
-  margin-bottom: 1rem;
-}
-
-input[type="range"] {
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  background: var(--bg-tertiary);
-  appearance: none;
-  cursor: pointer;
-  outline: none;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: grab;
-  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 2px 16px rgba(56, 189, 248, 0.6);
-}
-
-input[type="range"]::-webkit-slider-thumb:active {
-  cursor: grabbing;
-  transform: scale(0.95);
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: grab;
-  border: none;
-  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
-}
-
-.slider-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.control-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-adjust {
-  flex: 1;
-  padding: 0.625rem 1rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-adjust:hover {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: var(--bg-primary);
-}
-
-.btn-adjust:active {
-  transform: scale(0.98);
-}
-
-.result-panel {
-  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(56, 189, 248, 0.05) 100%);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-card), var(--shadow-glow);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  align-items: center;
-}
-
-.dew-point-display {
-  text-align: center;
-}
-
-.dew-point-label {
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-}
-
-.dew-point-value {
-  font-family: var(--font-mono);
-  font-size: 4rem;
-  font-weight: 500;
-  color: var(--accent-cool);
-  line-height: 1;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.25rem;
-}
-
-.dew-unit {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-}
-
-.dew-point-secondary {
-  font-size: 1.125rem;
-  color: var(--text-muted);
-  margin-top: 0.5rem;
-}
-
-.comfort-indicator {
-  padding: 1rem;
-}
-
-.comfort-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  margin-bottom: 0.75rem;
-}
-
-.comfort-bar {
-  position: relative;
-  height: 12px;
-  background: linear-gradient(90deg,
-    #3b82f6 0%,
-    #22c55e 25%,
-    #eab308 50%,
-    #f97316 75%,
-    #ef4444 100%
-  );
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-}
-
-.comfort-zones {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 1rem;
-  font-size: 0.625rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.zone {
-  color: var(--text-muted);
-}
-
-.comfort-marker {
-  position: absolute;
-  top: -4px;
-  width: 20px;
-  height: 20px;
-  background: var(--text-primary);
-  border: 3px solid var(--bg-primary);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  transition: left 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.comfort-text {
-  text-align: center;
-  font-weight: 500;
-  font-size: 1rem;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-sm);
-}
-
-.spread-display {
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-.spread-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.spread-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.spread-value {
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
-  color: var(--accent-warm);
-}
-
-.spread-description {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.visualization-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-}
-
-.chart-container {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-card);
-}
-
-.chart-container h3 {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-canvas {
-  width: 100% !important;
-  height: 250px !important;
-}
-
-.explanation-panel {
-  margin-top: 2rem;
-}
-
-.explanation-panel h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-}
-
-.explanation-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-}
-
-.card-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-.card h4 {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: var(--accent-primary);
-}
-
-.card p {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.formula-box {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-}
-
-.formula-box h4 {
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
-  color: var(--text-primary);
-}
-
-.formula-box p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-bottom: 0.75rem;
-}
-
-.formula-box code {
-  display: block;
-  background: var(--bg-primary);
-  border-radius: var(--radius-sm);
-  padding: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--accent-cool);
-  line-height: 1.8;
-  margin-bottom: 0.75rem;
-}
-
-.formula-note {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-footer {
-  margin-top: 3rem;
-  padding: 2rem 0;
-  text-align: center;
-  border-top: 1px solid var(--border-color);
-}
-
-footer p {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .dew-point-value {
-    font-size: 3rem;
-  }
-
-  .visualization-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .chart-container {
-    min-width: 0;
-  }
-
-  canvas {
-    height: 200px !important;
-  }
-}
-
-.comfort-text.dry { color: #3b82f6; }
-.comfort-text.comfortable { color: #22c55e; }
-.comfort-text.humid { color: #eab308; }
-.comfort-text.very-humid { color: #f97316; }
-.comfort-text.oppressive { color: #ef4444; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    // Theme flicker prevention - runs immediately before page renders
+    (function () {
+      const savedTheme = localStorage.getItem("theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (systemDark ? "dark" : "light");
+      document.documentElement.className = theme;
+    })();
+  </script>
 </head>
 <body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <span class="theme-icon-light">🌙</span>
+    <span class="theme-icon-dark" style="display:none;">☀️</span>
+  </button>
+
   <div class="container">
+    <nav class="site-nav">
+      <a href="/">Tools</a>
+    </nav>
+
     <header>
       <h1>Dew Point Explorer</h1>
       <p class="subtitle">Understanding how temperature and humidity affect condensation</p>
@@ -627,25 +133,25 @@ footer p {
 
         <div class="explanation-cards">
           <div class="card">
-            <div class="card-icon">💧</div>
+            <div class="card-icon">&#128167;</div>
             <h4>What is Dew Point?</h4>
             <p>The dew point is the temperature at which air becomes saturated with water vapor. When air cools to its dew point, water vapor begins to condense into liquid—forming dew, fog, or clouds.</p>
           </div>
 
           <div class="card">
-            <div class="card-icon">🌡️</div>
+            <div class="card-icon">&#127777;</div>
             <h4>Temperature's Role</h4>
             <p>Warmer air can hold more water vapor. As temperature rises with the same moisture content, relative humidity drops and the dew point stays constant. The gap between temperature and dew point widens.</p>
           </div>
 
           <div class="card">
-            <div class="card-icon">💨</div>
+            <div class="card-icon">&#128168;</div>
             <h4>Humidity's Role</h4>
             <p>Higher relative humidity means the air holds more of its maximum possible moisture. At 100% humidity, the dew point equals the air temperature—condensation begins immediately.</p>
           </div>
 
           <div class="card">
-            <div class="card-icon">🎯</div>
+            <div class="card-icon">&#127919;</div>
             <h4>The Spread Matters</h4>
             <p>The difference between air temperature and dew point tells you how close you are to condensation. A small spread means fog or dew is likely; a large spread means the air feels drier.</p>
           </div>
@@ -669,6 +175,28 @@ footer p {
   </div>
 
   <script>
+// Theme toggle functionality
+const themeToggle = document.getElementById('theme-toggle');
+const lightIcon = themeToggle.querySelector('.theme-icon-light');
+const darkIcon = themeToggle.querySelector('.theme-icon-dark');
+
+function updateThemeIcon() {
+  const isDark = document.documentElement.className === 'dark';
+  lightIcon.style.display = isDark ? 'none' : 'inline';
+  darkIcon.style.display = isDark ? 'inline' : 'none';
+}
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.className;
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.className = newTheme;
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon();
+});
+
+updateThemeIcon();
+
+// Dew point calculation
 const MAGNUS_B = 17.67;
 const MAGNUS_C = 243.5;
 
@@ -740,7 +268,20 @@ function updateDisplay() {
   updateCharts(temp, humidity, dewPoint);
 }
 
+function getChartColors() {
+  const isDark = document.documentElement.className === 'dark';
+  return {
+    accent: isDark ? '#4dabf7' : '#0984e3',
+    accentSecondary: isDark ? '#a29bfe' : '#6c5ce7',
+    text: isDark ? '#a8a8a8' : '#636e72',
+    grid: isDark ? 'rgba(74, 74, 74, 0.5)' : 'rgba(180, 180, 180, 0.5)',
+    bg: isDark ? 'rgba(28, 27, 23, 0.95)' : 'rgba(244, 241, 228, 0.95)',
+    border: isDark ? '#4a4a4a' : '#b4b4b4'
+  };
+}
+
 function createCharts() {
+  const colors = getChartColors();
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -753,15 +294,15 @@ function createCharts() {
         display: false
       },
       tooltip: {
-        backgroundColor: 'rgba(17, 24, 39, 0.95)',
-        titleColor: '#f1f5f9',
-        bodyColor: '#94a3b8',
-        borderColor: '#334155',
+        backgroundColor: colors.bg,
+        titleColor: colors.text,
+        bodyColor: colors.text,
+        borderColor: colors.border,
         borderWidth: 1,
         cornerRadius: 8,
         padding: 12,
         titleFont: {
-          family: "'DM Sans', sans-serif",
+          family: "'Inter', sans-serif",
           size: 13,
           weight: 500
         },
@@ -774,24 +315,24 @@ function createCharts() {
     scales: {
       x: {
         grid: {
-          color: 'rgba(51, 65, 85, 0.5)',
+          color: colors.grid,
           drawBorder: false
         },
         ticks: {
-          color: '#64748b',
+          color: colors.text,
           font: {
-            family: "'DM Sans', sans-serif",
+            family: "'Inter', sans-serif",
             size: 11
           }
         }
       },
       y: {
         grid: {
-          color: 'rgba(51, 65, 85, 0.5)',
+          color: colors.grid,
           drawBorder: false
         },
         ticks: {
-          color: '#64748b',
+          color: colors.text,
           font: {
             family: "'JetBrains Mono', monospace",
             size: 11
@@ -811,20 +352,20 @@ function createCharts() {
         {
           label: 'Dew Point',
           data: [],
-          borderColor: '#22d3ee',
-          backgroundColor: 'rgba(34, 211, 238, 0.1)',
+          borderColor: colors.accent,
+          backgroundColor: `${colors.accent}1a`,
           borderWidth: 2,
           fill: true,
           tension: 0.4,
           pointRadius: 0,
           pointHoverRadius: 6,
-          pointHoverBackgroundColor: '#22d3ee'
+          pointHoverBackgroundColor: colors.accent
         },
         {
           label: 'Current',
           data: [],
-          borderColor: '#fb923c',
-          backgroundColor: '#fb923c',
+          borderColor: colors.accentSecondary,
+          backgroundColor: colors.accentSecondary,
           borderWidth: 0,
           pointRadius: 8,
           pointHoverRadius: 10,
@@ -841,9 +382,9 @@ function createCharts() {
           title: {
             display: true,
             text: 'Relative Humidity (%)',
-            color: '#64748b',
+            color: colors.text,
             font: {
-              family: "'DM Sans', sans-serif",
+              family: "'Inter', sans-serif",
               size: 11
             }
           }
@@ -861,20 +402,20 @@ function createCharts() {
         {
           label: 'Dew Point',
           data: [],
-          borderColor: '#818cf8',
-          backgroundColor: 'rgba(129, 140, 248, 0.1)',
+          borderColor: colors.accentSecondary,
+          backgroundColor: `${colors.accentSecondary}1a`,
           borderWidth: 2,
           fill: true,
           tension: 0.4,
           pointRadius: 0,
           pointHoverRadius: 6,
-          pointHoverBackgroundColor: '#818cf8'
+          pointHoverBackgroundColor: colors.accentSecondary
         },
         {
           label: 'Current',
           data: [],
-          borderColor: '#fb923c',
-          backgroundColor: '#fb923c',
+          borderColor: colors.accent,
+          backgroundColor: colors.accent,
           borderWidth: 0,
           pointRadius: 8,
           pointHoverRadius: 10,
@@ -891,9 +432,9 @@ function createCharts() {
           title: {
             display: true,
             text: 'Temperature (°C)',
-            color: '#64748b',
+            color: colors.text,
             font: {
-              family: "'DM Sans', sans-serif",
+              family: "'Inter', sans-serif",
               size: 11
             }
           }
@@ -1005,7 +546,7 @@ async function init() {
   } catch (error) {
     console.error('Failed to load Chart.js:', error);
     document.querySelectorAll('.chart-container').forEach(el => {
-      el.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">Charts unavailable</p>';
+      el.innerHTML = '<p style="color: var(--color-ink-secondary); text-align: center; padding: 2rem;">Charts unavailable</p>';
     });
     setupEventListeners();
     updateDisplay();
