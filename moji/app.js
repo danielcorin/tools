@@ -446,14 +446,15 @@ function play() {
   bottomSection.classList.remove('revealed');
   gridDisplay.innerHTML = '';
 
-  // In debug mode, use a different seed each play
+  // Use timestamp as seed for unique results per player
+  const playerSeed = Date.now();
   const puzzleSeed = DEBUG_UNLIMITED_PLAYS
     ? currentPuzzleNumber * 1000 + debugPlayCount++
-    : currentPuzzleNumber;
+    : playerSeed;
 
   // Generate and PERSIST first
   currentResult = generateResult(puzzleSeed);
-  currentGrid = generateGrid(puzzleSeed, currentResult);
+  currentGrid = generateGrid(playerSeed, currentResult);
   currentStats = recordResult(currentPuzzleNumber, currentResult, currentGrid);
 
   // Then show animation
