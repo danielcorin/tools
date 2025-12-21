@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Moji</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f7f7f7;
+      --text: #1a1a1a;
+      --text-secondary: #787c7e;
+      --border: #d3d6da;
+      --tile-empty: #ffffff;
+      --tile-empty-border: #d3d6da;
+      --green: #6aaa64;
+      --yellow: #c9b458;
+      --blue: #85c0f9;
+      --purple: #b381c9;
+      --orange: #f5793a;
+      --gray: #787c7e;
+      --modal-bg: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121213;
+        --bg-secondary: #1a1a1b;
+        --text: #ffffff;
+        --text-secondary: #818384;
+        --border: #3a3a3c;
+        --tile-empty: #3a3a3c;
+        --tile-empty-border: #565758;
+        --green: #538d4e;
+        --yellow: #b59f3b;
+        --blue: #5a9fd4;
+        --purple: #9065a6;
+        --orange: #cc6128;
+        --gray: #3a3a3c;
+        --modal-bg: #1a1a1b;
+      }
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    .header {
+      width: 100%;
+      max-width: 500px;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left, .header-right {
+      width: 70px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-right {
+      justify-content: flex-end;
+    }
+
+    .header h1 {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--text);
+      font-size: 20px;
+    }
+
+    .icon-btn:hover {
+      opacity: 0.7;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* Play Button */
+    .play-container {
+      text-align: center;
+    }
+
+    .play-btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 16px 48px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .play-btn:hover {
+      opacity: 0.9;
+    }
+
+    .play-btn:active {
+      transform: scale(0.98);
+    }
+
+    .play-hint {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Result Display */
+    .result-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .result-container.visible {
+      display: flex;
+    }
+
+    .result-header {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .result-header.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result-title {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .result-score {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    /* Grid Display */
+    .grid-display {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .grid-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .grid-tile {
+      width: 56px;
+      height: 56px;
+      border: 2px solid transparent;
+      transform: rotateX(90deg);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.15s ease;
+    }
+
+    .grid-tile.revealed {
+      transform: rotateX(0deg);
+      opacity: 1;
+    }
+
+    /* Tile colors */
+    .grid-tile.empty {
+      background: var(--tile-empty);
+      border-color: var(--tile-empty-border);
+    }
+
+    .grid-tile.green {
+      background: var(--green);
+    }
+
+    .grid-tile.yellow {
+      background: var(--yellow);
+    }
+
+    .grid-tile.blue {
+      background: var(--blue);
+    }
+
+    .grid-tile.purple {
+      background: var(--purple);
+    }
+
+    .grid-tile.orange {
+      background: var(--orange);
+    }
+
+    .grid-tile.star {
+      background: linear-gradient(135deg, #f5a623 0%, #f7dc6f 50%, #f5a623 100%);
+    }
+
+    .grid-tile.star.revealed {
+      animation: starPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes starPulse {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(245, 166, 35, 0.6);
+        transform: rotateX(0deg) scale(1);
+      }
+      50% {
+        box-shadow: 0 0 16px rgba(247, 220, 111, 0.9);
+        transform: rotateX(0deg) scale(1.05);
+      }
+    }
+
+    .grid-tile.lightbulb {
+      background: linear-gradient(135deg, #f7dc6f 0%, #fffde7 50%, #f7dc6f 100%);
+    }
+
+    .grid-tile.lightbulb.revealed {
+      animation: bulbGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes bulbGlow {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(247, 220, 111, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(255, 253, 231, 1), 0 0 30px rgba(247, 220, 111, 0.7);
+      }
+    }
+
+    /* Bottom Section */
+    .bottom-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .bottom-section.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .streak-display {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .streak-display.active {
+      color: #e67e22;
+      font-weight: 600;
+    }
+
+    .share-btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 14px 36px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .share-btn:hover {
+      opacity: 0.9;
+    }
+
+    .share-btn:active {
+      transform: scale(0.98);
+    }
+
+    .copied-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a1a1a;
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+    }
+
+    .copied-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Stats Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--modal-bg);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .modal h2 {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* Distribution Chart */
+    .distribution-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .distribution-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .distribution-label {
+      font-size: 14px;
+      font-weight: 600;
+      width: 20px;
+      text-align: right;
+    }
+
+    .distribution-bar-container {
+      flex: 1;
+      height: 20px;
+    }
+
+    .distribution-bar {
+      height: 100%;
+      min-width: 24px;
+      background: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .distribution-bar.highlight {
+      background: var(--green);
+    }
+
+    .distribution-bar.fail {
+      background: #e74c3c;
+    }
+
+    .distribution-bar.special {
+      background: linear-gradient(90deg, #9b59b6, #3498db);
+    }
+
+    /* Next Game Timer */
+    .next-game {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .next-game-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .next-game-timer {
+      font-size: 28px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 360px) {
+      .grid-tile {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <button class="icon-btn" id="stats-btn" aria-label="Statistics">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="12" width="4" height="9"/>
+          <rect x="10" y="6" width="4" height="15"/>
+          <rect x="17" y="3" width="4" height="18"/>
+        </svg>
+      </button>
+    </div>
+    <h1>Moji</h1>
+    <div class="header-right">
+      <button class="icon-btn" id="help-btn" aria-label="Help">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9 9a3 3 0 1 1 4 2.8 2 2 0 0 0-1 1.7V15"/>
+          <circle cx="12" cy="18" r="0.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="play-container" id="play-container">
+      <button class="play-btn" id="play-btn">Play</button>
+      <p class="play-hint">Make it count</p>
+    </div>
+
+    <div class="result-container" id="result-container">
+      <div class="result-header" id="result-header">
+        <div class="result-title">Moji #<span id="puzzle-number">1</span></div>
+        <div class="result-score" id="result-score">3/6</div>
+      </div>
+      <div class="grid-display" id="grid-display"></div>
+      <div class="bottom-section" id="bottom-section">
+        <div class="streak-display" id="streak-display"></div>
+        <button class="share-btn" id="share-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16,6 12,2 8,6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div class="copied-toast" id="copied-toast">Copied to clipboard!</div>
+
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="stats-modal">
+    <div class="modal">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <h2>Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-played">0</div>
+          <div class="stat-label">Played</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-win-pct">0</div>
+          <div class="stat-label">Win %</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">Current<br>Streak</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-max-streak">0</div>
+          <div class="stat-label">Max<br>Streak</div>
+        </div>
+      </div>
+      <div class="distribution-title">Guess Distribution</div>
+      <div id="distribution-chart"></div>
+      <div class="next-game">
+        <div class="next-game-label">Next Moji</div>
+        <div class="next-game-timer" id="next-game-timer">00:00:00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal">
+      <button class="modal-close" id="help-close">&times;</button>
+      <h2>How to Play</h2>
+      <p style="margin-bottom: 16px; line-height: 1.6;">
+        Press <strong>Play</strong> to play today's puzzle.
+      </p>
+      <p style="margin-bottom: 16px; line-height: 1.6;">
+        Share your result with friends to show off your skills.
+      </p>
+      <p style="margin-bottom: 16px; line-height: 1.6;">
+        Come back every day to build your streak!
+      </p>
+      <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+        A new Moji is available each day at midnight.
+      </p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
