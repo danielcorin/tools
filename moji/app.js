@@ -581,13 +581,14 @@ function updateStatsModal() {
   const chart = document.getElementById('distribution-chart');
   chart.innerHTML = '';
 
-  // Build keys in order: 0 (if any), 1-6, X, 7 (if any), ⭐ (if any), 💡 (if any)
+  // Build keys in order: 0 (if any), 1-6, 7 (if any), ⭐ (if any), 💡 (if any), X (fails last)
   const allKeys = [];
   if (stats.specialOutcomes['0']) allKeys.push('0');
-  allKeys.push('1', '2', '3', '4', '5', '6', 'X');
+  allKeys.push('1', '2', '3', '4', '5', '6');
   if (stats.specialOutcomes['7']) allKeys.push('7');
   if (stats.specialOutcomes['⭐']) allKeys.push('⭐');
   if (stats.specialOutcomes['💡']) allKeys.push('💡');
+  allKeys.push('X');
 
   const maxCount = Math.max(
     ...Object.values(stats.distribution),
