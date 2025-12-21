@@ -1,6 +1,6 @@
-# Tools
+# Vibes
 
-Miscellaneous tools, mostly built with LLMs.
+Miscellaneous vibes and tools, probably built with LLMs.
 
 ## Tools
 
